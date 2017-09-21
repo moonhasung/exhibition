@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="exhibit">	
+	<select id="list" resultType="ExhibitDTO" parameterType="Map" >
+	select * from exhibit
+	</select>
+	<select id="total" resultType="int" parameterType="Map">
+ 	SELECT COUNT(*) FROM exhibit 
+     <where>
+    	<if test="col=='name'">
+    		name like '%'||#{word}||'%'
+    	</if>
+    	<if test="col=='title'">
+    		title like '%'||#{word}||'%'
+    	</if>
+    	<if test="col=='content'">
+    		content like '%'||#{word}||'%'
+    	</if>
+    </where>       
+</select>
+
+	<insert id = "create" parameterType="ExhibitDTO">
+	insert into exhibit
+	(exhibitno, title, timeend, time, content, fnamemain,fnameview)
+	values
+	(#{title},sysdate,#{location},sysdate,#{content},${fnamemain},${fnameview})
+	</insert>
+	
+		
+	<update id = "update" parameterType="ExhibitDTO">
+	update exhibit
+	set
+	title =#{title},
+	content=#{content},
+	fnamemain=#{fnamemain},
+	fnameview=#{fnameview}
+	where exhibitno = #{exhibitno}
+	
+	
+	</update>
+
+	<update id="updateFileView" parameterType="Map">
+	update fnameview
+	set
+	fnameview = #{fnameview}
+	where exhibitno = #{exhibitno}
+	</update>
+	<update id="updateFileMain" parameterType="Map">
+	update fnameview
+	set
+	fnamemain = #{fnamemain}
+	where exhibitno = #{exhibitno}
+	</update>
+
+</mapper>

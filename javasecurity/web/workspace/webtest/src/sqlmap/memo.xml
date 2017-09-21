@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="memotest">
+	<typeAlias alias="MemoDTO" type="memo.MemoDTO"/>
+
+	  <update id = "create" parameterClass="MemoDTO">
+  		INSERT INTO memo(memono, title, content, wdate, grpno) 
+		VALUES(memo_seq.nextval, #title#, #content#,sysdate,
+		(select nvl(max(grpno),0)+1 from memo))
+   </update>
+  <select id= "list" parameterClass="map" resultClass="MemoDTO">
+  SELECT memono, title, wdate, viewcnt, grpno,
+	indent, ansnum,  r
+	from(
+	SELECT memono, title, wdate, viewcnt, grpno,
+	indent,ansnum, rownum as r
+	from(
+	SELECT memono, title, wdate, viewcnt, grpno, indent, ansnum 
+	FROM memo  
+	ORDER BY grpno desc, ansnum ASC  
+	)
+)where r>=3 and r<=5
+  </select>
+  	
+   <update id = "read">
+select memono, title, content, 
+to_char(wdate,'yyyy-mm-dd') wdate, viewcnt 
+from memo 
+where memono = 1
+   </update>
+   
+   <update id = "update">
+   update MEMO
+	set 
+	title = '변경',
+	content = '내용변경'
+	where memono=#memono#
+   </update>
+   <update id = "delete">
+   delete from memo 
+   where memono=#memono#
+   </update>
+    
+    
+   
+   
+   
+   
+   
+   
+        
+</sqlMap>
+
